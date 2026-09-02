@@ -1,26 +1,65 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #090407;
+  --foreground: #f4f4f5;
+  --primary: #ffffff;
+  --primary-foreground: #090407;
+  --accent-wine: #5a0f23;
+  --accent-maroon: #3d0715;
+  --accent-rose: #be185d;
+  --card-bg: rgba(20, 10, 16, 0.6);
+  --border-subtle: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-accent-wine: var(--accent-wine);
+  --color-accent-maroon: var(--accent-maroon);
+  --color-accent-rose: var(--accent-rose);
+  --color-card-bg: var(--card-bg);
+  --color-border-subtle: var(--border-subtle);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #090407;
+  color: #f4f4f5;
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Custom Hide Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Marquee Animations */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Custom Selection */
+::selection {
+  background: #be185d;
+  color: #ffffff;
 }
