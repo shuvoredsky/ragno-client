@@ -2,18 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
 import { Product } from "@/types";
-
-export interface ShopProduct {
-  _id?: string;
-  name: string;
-  slug: string;
-  price: number;
-  mrpPrice?: number;
-  thumbnailImage: string;
-  categorySlug?: string;
-  fabric?: string;
-  isSale?: boolean;
-}
+import { ShopProduct } from "./mock-products";
 
 interface ProductGridProps {
   products: ShopProduct[];

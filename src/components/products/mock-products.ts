@@ -1,15 +1,132 @@
-import { ShopProduct } from "./product-grid";
+export interface ProductSizeOption {
+  size: string;
+  availableQuantity: number;
+  barcode?: string;
+}
+
+export interface DetailedProduct {
+  _id: string;
+  name: string;
+  slug: string;
+  price: number;
+  mrpPrice?: number;
+  thumbnailImage: string;
+  images: string[];
+  categoryName: string;
+  categorySlug: string;
+  fabric?: string;
+  sku: string;
+  isSale?: boolean;
+  isOutOfStock?: boolean;
+  sizeOptions: ProductSizeOption[];
+  description: string;
+  detailsAndCare: string[];
+  shippingAndReturns: string;
+}
+
+export interface ShopProduct {
+  _id?: string;
+  name: string;
+  slug: string;
+  price: number;
+  mrpPrice?: number;
+  thumbnailImage: string;
+  categorySlug?: string;
+  fabric?: string;
+  isSale?: boolean;
+  isOutOfStock?: boolean;
+}
+
+export const detailedProducts: Record<string, DetailedProduct> = {
+  "full-sleeve-check-shirt-extra-discount-offer": {
+    _id: "prod-detail-01",
+    name: "Full sleeve check shirt extra discount offer",
+    slug: "full-sleeve-check-shirt-extra-discount-offer",
+    price: 550,
+    mrpPrice: 800,
+    thumbnailImage: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1603252109303-2751441dd157?q=80&w=1000&auto=format&fit=crop",
+    ],
+    categoryName: "premium-quality-at-a-fair-price",
+    categorySlug: "fair-price",
+    fabric: "waffle-cotton",
+    sku: "SKU FSCS-9537",
+    isSale: true,
+    sizeOptions: [
+      { size: "S", availableQuantity: 0 },
+      { size: "M", availableQuantity: 2 },
+      { size: "L", availableQuantity: 0 },
+      { size: "XL", availableQuantity: 0 },
+    ],
+    description:
+      "Engineered from high-density, breathable woven yarn, this full-sleeve check shirt provides a tailored yet effortless drape. Perfect for versatile casual-to-semi-formal layering across all seasons. Features reinforced seams, durable resin buttons, and a structured spread collar.",
+    detailsAndCare: [
+      "100% Pre-shrunk Combed Cotton Yarn",
+      "Spread collar with buttoned front placket",
+      "Single patch chest pocket",
+      "Double-button adjustable barrel cuffs",
+      "Machine wash cold inside out with like colors",
+      "Do not bleach, warm iron if necessary",
+    ],
+    shippingAndReturns:
+      "Standard delivery in Dhaka within 24-48 hours. Nationwide delivery across Bangladesh in 3-5 business days. Cash on delivery available. Hassle-free 7-day exchange policy for unworn items with original tags intact.",
+  },
+};
+
+export const youMayAlsoLikeProducts: ShopProduct[] = [
+  {
+    _id: "rel-01",
+    name: "Stripe full sleeve shirt",
+    slug: "stripe-full-sleeve-shirt",
+    price: 650,
+    mrpPrice: 800,
+    thumbnailImage: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=800&auto=format&fit=crop",
+    isSale: true,
+    isOutOfStock: true,
+  },
+  {
+    _id: "rel-02",
+    name: "Regular Fit Textured Shirt",
+    slug: "regular-fit-textured-shirt",
+    price: 450,
+    thumbnailImage: "https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?q=80&w=800&auto=format&fit=crop",
+    isSale: false,
+    isOutOfStock: true,
+  },
+  {
+    _id: "rel-03",
+    name: "Grey & White Striped Boxy Fit Shirt",
+    slug: "grey-white-striped-boxy-fit-shirt",
+    price: 800,
+    thumbnailImage: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?q=80&w=800&auto=format&fit=crop",
+    isSale: false,
+    isOutOfStock: false,
+  },
+  {
+    _id: "rel-04",
+    name: "Rust Orange Textured Boxy Fit Shirt",
+    slug: "rust-orange-textured-boxy-fit-shirt",
+    price: 800,
+    thumbnailImage: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=800&auto=format&fit=crop",
+    isSale: false,
+    isOutOfStock: true,
+  },
+];
 
 export const allMockProducts: ShopProduct[] = [
   {
     _id: "prod-all-01",
     name: "Full sleeve check shirt extra discount offer",
     slug: "full-sleeve-check-shirt-extra-discount-offer",
-    price: 650,
-    mrpPrice: 1200,
+    price: 550,
+    mrpPrice: 800,
     thumbnailImage: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
     categorySlug: "basic",
     fabric: "waffle-cotton",
+    isSale: true,
   },
   {
     _id: "prod-all-02",
@@ -20,6 +137,7 @@ export const allMockProducts: ShopProduct[] = [
     thumbnailImage: "https://images.unsplash.com/photo-1603252109303-2751441dd157?q=80&w=800&auto=format&fit=crop",
     categorySlug: "premium",
     fabric: "woolen",
+    isSale: true,
   },
   {
     _id: "prod-all-03",
@@ -30,6 +148,7 @@ export const allMockProducts: ShopProduct[] = [
     thumbnailImage: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?q=80&w=800&auto=format&fit=crop",
     categorySlug: "premium",
     fabric: "silk-printed",
+    isSale: true,
   },
   {
     _id: "prod-all-04",
@@ -40,6 +159,7 @@ export const allMockProducts: ShopProduct[] = [
     thumbnailImage: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800&auto=format&fit=crop",
     categorySlug: "basic",
     fabric: "linen",
+    isSale: true,
   },
   {
     _id: "prod-all-05",
@@ -50,6 +170,7 @@ export const allMockProducts: ShopProduct[] = [
     thumbnailImage: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=800&auto=format&fit=crop",
     categorySlug: "premium",
     fabric: "woolen",
+    isSale: true,
   },
   {
     _id: "prod-all-06",
@@ -60,6 +181,7 @@ export const allMockProducts: ShopProduct[] = [
     thumbnailImage: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=800&auto=format&fit=crop",
     categorySlug: "basic",
     fabric: "waffle-cotton",
+    isSale: true,
   },
   {
     _id: "prod-all-07",
@@ -88,6 +210,7 @@ export const allMockProducts: ShopProduct[] = [
     thumbnailImage: "https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?q=80&w=800&auto=format&fit=crop",
     categorySlug: "premium",
     fabric: "woolen",
+    isSale: true,
   },
   {
     _id: "prod-all-10",
@@ -115,116 +238,5 @@ export const allMockProducts: ShopProduct[] = [
     thumbnailImage: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=800&auto=format&fit=crop",
     categorySlug: "premium",
     fabric: "silk-printed",
-  },
-  {
-    _id: "prod-all-13",
-    name: "Premium Embroidery Black Shirt",
-    slug: "premium-embroidery-black-shirt",
-    price: 1450,
-    thumbnailImage: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "premium",
-    fabric: "woolen",
-  },
-  {
-    _id: "prod-all-14",
-    name: "Pastel Rose Embroidery Silk Shirt",
-    slug: "pastel-rose-embroidery-silk-shirt",
-    price: 1450,
-    thumbnailImage: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "premium",
-    fabric: "silk-printed",
-  },
-  {
-    _id: "prod-all-15",
-    name: "Monochrome Botanical Floral Shirt",
-    slug: "monochrome-botanical-floral-shirt",
-    price: 990,
-    mrpPrice: 1550,
-    thumbnailImage: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "premium",
-    fabric: "silk-printed",
-  },
-  {
-    _id: "prod-all-16",
-    name: "Terracotta Cozy Everyday Cotton",
-    slug: "terracotta-cozy-everyday-cotton",
-    price: 890,
-    mrpPrice: 1350,
-    thumbnailImage: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "basic",
-    fabric: "waffle-cotton",
-  },
-  {
-    _id: "prod-all-17",
-    name: "Burgundy Palm Luxury Silk Shirt",
-    slug: "burgundy-palm-luxury-silk-shirt",
-    price: 1350,
-    thumbnailImage: "https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "premium",
-    fabric: "silk-printed",
-  },
-  {
-    _id: "prod-all-18",
-    name: "Teal Tropical Camp Collar Shirt",
-    slug: "teal-tropical-camp-collar-shirt",
-    price: 1150,
-    thumbnailImage: "https://images.unsplash.com/photo-1603252109303-2751441dd157?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "basic",
-    fabric: "linen",
-  },
-  {
-    _id: "prod-all-19",
-    name: "Crimson Red Wave Textured Shirt",
-    slug: "crimson-red-wave-textured-shirt",
-    price: 990,
-    thumbnailImage: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "basic",
-    fabric: "waffle-cotton",
-  },
-  {
-    _id: "prod-all-20",
-    name: "Amber Mustard Vertical Stripe Shirt",
-    slug: "amber-mustard-vertical-stripe-shirt",
-    price: 920,
-    thumbnailImage: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "basic",
-    fabric: "linen",
-  },
-  {
-    _id: "prod-all-21",
-    name: "Deep Navy Camp Collar Formal Blend",
-    slug: "deep-navy-camp-collar-formal-blend",
-    price: 1250,
-    thumbnailImage: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "premium",
-    fabric: "woolen",
-  },
-  {
-    _id: "prod-all-22",
-    name: "Autumn Abstract Print Cotton Shirt",
-    slug: "autumn-abstract-print-cotton-shirt",
-    price: 890,
-    thumbnailImage: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "basic",
-    fabric: "waffle-cotton",
-  },
-  {
-    _id: "prod-all-23",
-    name: "Brown Plaid Classic Flannel Shirt",
-    slug: "brown-plaid-classic-flannel-shirt",
-    price: 1050,
-    thumbnailImage: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "basic",
-    fabric: "woolen",
-  },
-  {
-    _id: "prod-all-24",
-    name: "Midnight Monochrome Plaid Shirt",
-    slug: "midnight-monochrome-plaid-shirt",
-    price: 1100,
-    mrpPrice: 1650,
-    thumbnailImage: "https://images.unsplash.com/photo-1603252109303-2751441dd157?q=80&w=800&auto=format&fit=crop",
-    categorySlug: "premium",
-    fabric: "waffle-cotton",
   },
 ];
