@@ -10,7 +10,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-  brandTitle = "HEEMS",
+  brandTitle = "RAGNO",
   primaryButtonText = "Shop Premium",
   primaryButtonHref = "/products?category=premium",
   secondaryButtonText = "Shop Basic",

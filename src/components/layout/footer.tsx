@@ -7,7 +7,7 @@ interface FooterProps {
 }
 
 export function Footer({
-  brandName = "HEEMS",
+  brandName = "Ragno",
   tagline = "Best materials, fastest shipping, and 24/7 fitting consultations. Delivering across Bangladesh.",
 }: FooterProps) {
   return (
@@ -19,7 +19,7 @@ export function Footer({
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="inline-flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-700 via-rose-700 to-rose-900 border border-white/20 flex items-center justify-center text-white font-black text-base shadow-md group-hover:scale-105 transition-transform">
-                <span>H</span>
+                <span>R</span>
               </div>
               <span className="font-black tracking-widest text-xl text-white uppercase">
                 {brandName}

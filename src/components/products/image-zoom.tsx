@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 
 interface ImageZoomProps {
@@ -22,61 +22,73 @@ export function ImageZoom({
 }: ImageZoomProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-
-  // Position of the magnifying lens box
-  const [lensPosition, setLensPosition] = useState({ x: 0, y: 0 });
-
-  // Background position for the zoomed-in image inside the lens
-  const [bgPosition, setBgPosition] = useState({ x: 0, y: 0 });
-  const [bgDimensions, setBgDimensions] = useState({ width: 0, height: 0 });
-
-  // Detect touch device / hover capability
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsTouchDevice(window.matchMedia("(hover: none)").matches);
-    }
-  }, []);
+  const [lensStyle, setLensStyle] = useState<{
+    left: number;
+    top: number;
+    bgPosX: number;
+    bgPosY: number;
+    bgWidth: number;
+    bgHeight: number;
+  }>({
+    left: 0,
+    top: 0,
+    bgPosX: 0,
+    bgPosY: 0,
+    bgWidth: 0,
+    bgHeight: 0,
+  });
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (isTouchDevice || !containerRef.current) return;
+      const container = containerRef.current;
+      if (!container) return;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+      const rect = container.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
 
-      // Ensure cursor is within bounds
-      if (mouseX < 0 || mouseX > rect.width || mouseY < 0 || mouseY > rect.height) {
+      // Mouse coordinates relative to container
+      const clientX = e.clientX - rect.left;
+      const clientY = e.clientY - rect.top;
+
+      // Ensure cursor is strictly inside the container
+      if (clientX < 0 || clientX > rect.width || clientY < 0 || clientY > rect.height) {
         setIsHovering(false);
         return;
       }
 
-      // Calculate lens position (centered on cursor and clamped to container edges)
+      // Half lens offset
       const halfLens = lensSize / 2;
-      const lensX = Math.max(0, Math.min(mouseX - halfLens, rect.width - lensSize));
-      const lensY = Math.max(0, Math.min(mouseY - halfLens, rect.height - lensSize));
 
-      setLensPosition({ x: lensX, y: lensY });
+      // Calculate lens position clamped to container bounds
+      const clampedLensX = Math.max(0, Math.min(clientX - halfLens, rect.width - lensSize));
+      const clampedLensY = Math.max(0, Math.min(clientY - halfLens, rect.height - lensSize));
 
-      // Calculate background image dimensions & position for the zoom effect
-      const zoomedWidth = rect.width * zoomLevel;
-      const zoomedHeight = rect.height * zoomLevel;
+      // Zoomed background dimensions
+      const bgWidth = rect.width * zoomLevel;
+      const bgHeight = rect.height * zoomLevel;
 
-      setBgDimensions({ width: zoomedWidth, height: zoomedHeight });
+      // Background position inside lens so the cursor point remains centered
+      const bgPosX = clientX * zoomLevel - halfLens;
+      const bgPosY = clientY * zoomLevel - halfLens;
 
-      const bgX = mouseX * zoomLevel - halfLens;
-      const bgY = mouseY * zoomLevel - halfLens;
+      setLensStyle({
+        left: clampedLensX,
+        top: clampedLensY,
+        bgPosX,
+        bgPosY,
+        bgWidth,
+        bgHeight,
+      });
 
-      setBgPosition({ x: bgX, y: bgY });
+      if (!isHovering) {
+        setIsHovering(true);
+      }
     },
-    [isTouchDevice, lensSize, zoomLevel]
+    [isHovering, lensSize, zoomLevel]
   );
 
   const handleMouseEnter = () => {
-    if (!isTouchDevice) {
-      setIsHovering(true);
-    }
+    setIsHovering(true);
   };
 
   const handleMouseLeave = () => {
@@ -98,7 +110,7 @@ export function ImageZoom({
         fill
         priority
         sizes="(max-width: 1024px) 100vw, 50vw"
-        className="object-cover object-center transition-transform duration-300"
+        className="object-cover object-center pointer-events-none transition-transform duration-300"
       />
 
       {/* Top-Left SALE Badge */}
@@ -110,19 +122,20 @@ export function ImageZoom({
         </div>
       )}
 
-      {/* Circular Magnifying Glass Lens (Desktop Hover) */}
-      {isHovering && !isTouchDevice && (
+      {/* Circular Magnifying Glass Lens (Active on Hover) */}
+      {isHovering && (
         <div
           style={{
             width: `${lensSize}px`,
             height: `${lensSize}px`,
-            transform: `translate3d(${lensPosition.x}px, ${lensPosition.y}px, 0)`,
+            left: `${lensStyle.left}px`,
+            top: `${lensStyle.top}px`,
             backgroundImage: `url(${src})`,
             backgroundRepeat: "no-repeat",
-            backgroundSize: `${bgDimensions.width}px ${bgDimensions.height}px`,
-            backgroundPosition: `-${bgPosition.x}px -${bgPosition.y}px`,
+            backgroundSize: `${lensStyle.bgWidth}px ${lensStyle.bgHeight}px`,
+            backgroundPosition: `-${lensStyle.bgPosX}px -${lensStyle.bgPosY}px`,
           }}
-          className="absolute top-0 left-0 rounded-full border-2 border-white/90 shadow-[0_0_30px_rgba(0,0,0,0.85)] pointer-events-none z-20 will-change-transform bg-zinc-950"
+          className="absolute rounded-full border-2 border-white/90 shadow-[0_0_30px_rgba(0,0,0,0.9)] pointer-events-none z-30 bg-zinc-950"
           aria-hidden="true"
         />
       )}

@@ -119,7 +119,7 @@ export default function RegisterPage() {
   return (
     <AuthLayout
       title="Create Account"
-      subtitle="Join HEEMS for exclusive drops, order tracking, and member rewards"
+      subtitle="Join Ragno for exclusive drops, order tracking, and member rewards"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Full Name */}

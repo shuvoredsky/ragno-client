@@ -28,7 +28,7 @@ const defaultLinks: NavLink[] = [
 ];
 
 export function Navbar({
-  brandName = "HEEMS",
+  brandName = "Ragno",
   links = defaultLinks,
 }: NavbarProps) {
   const pathname = usePathname();
@@ -73,7 +73,7 @@ export function Navbar({
         {/* Left: Brand Logo / Avatar */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-700 via-rose-700 to-rose-900 border border-white/20 flex items-center justify-center text-white font-black text-sm sm:text-base tracking-tighter shadow-md group-hover:scale-105 transition-transform">
-            <span>H</span>
+            <span>R</span>
           </div>
           <span className="font-black tracking-widest text-lg sm:text-xl text-white uppercase sm:hidden lg:inline-block">
             {brandName}

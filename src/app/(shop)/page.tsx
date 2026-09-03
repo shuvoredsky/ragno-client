@@ -16,13 +16,13 @@ export default function HomePage() {
       <AnnouncementBar text="FREE SHIPPING ON ORDERS OVER ৳5000" />
 
       {/* 2. Global Navbar */}
-      <Navbar brandName="HEEMS" />
+      <Navbar brandName="Ragno" />
 
       {/* Main Content Sections */}
       <main className="flex-1">
         {/* 3. Hero Section (Massive Bold Gradient Typography & Shop CTAs) */}
         <HeroSection
-          brandTitle="HEEMS"
+          brandTitle="RAGNO"
           primaryButtonText="Shop Premium"
           primaryButtonHref="/products?category=premium"
           secondaryButtonText="Shop Basic"
@@ -59,7 +59,7 @@ export default function HomePage() {
       </main>
 
       {/* 7. Footer */}
-      <Footer brandName="HEEMS" />
+      <Footer brandName="Ragno" />
 
       {/* Global Interactive Overlays */}
       <CartDrawer />

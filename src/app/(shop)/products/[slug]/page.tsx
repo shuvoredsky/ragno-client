@@ -125,7 +125,7 @@ export default function ProductDetailPage({
       <AnnouncementBar text="FREE SHIPPING ON ORDERS OVER ৳5000" />
 
       {/* 2. Global Navbar */}
-      <Navbar brandName="HEEMS" />
+      <Navbar brandName="Ragno" />
 
       {/* Main Product Container */}
       <main className="flex-1 container mx-auto px-4 sm:px-6 py-6 sm:py-10 max-w-7xl">
@@ -221,7 +221,7 @@ export default function ProductDetailPage({
       </main>
 
       {/* 6. Footer */}
-      <Footer brandName="HEEMS" />
+      <Footer brandName="Ragno" />
 
       {/* Global Interactive Drawers */}
       <CartDrawer />

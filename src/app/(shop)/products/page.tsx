@@ -161,7 +161,7 @@ export default function ProductsPage() {
       <AnnouncementBar text="FREE SHIPPING ON ORDERS OVER ৳5000" />
 
       {/* 2. Global Navbar */}
-      <Navbar brandName="HEEMS" />
+      <Navbar brandName="Ragno" />
 
       {/* 3. Page Header Banner (Collage Dark Style with Italic Serif Title) */}
       <div className="relative w-full h-48 sm:h-64 md:h-80 overflow-hidden flex items-center justify-center text-center select-none bg-zinc-950">
@@ -306,7 +306,7 @@ export default function ProductsPage() {
       )}
 
       {/* 5. Footer */}
-      <Footer brandName="HEEMS" />
+      <Footer brandName="Ragno" />
 
       {/* Global Interactive Drawers */}
       <CartDrawer />

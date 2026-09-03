@@ -33,7 +33,7 @@ export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 group">
             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-700 via-rose-700 to-rose-900 border border-white/20 flex items-center justify-center text-white font-black text-lg shadow-xl group-hover:scale-105 transition-transform">
-              <span>H</span>
+              <span>R</span>
             </div>
           </Link>
           <h1 className="mt-4 text-2xl sm:text-3xl font-black uppercase tracking-tight text-white drop-shadow-sm">

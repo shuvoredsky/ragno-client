@@ -10,10 +10,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Ruchi Rong | Premium Fashion & Lifestyle E-Commerce",
-    template: "%s | Ruchi Rong",
+    default: "Ragno | Premium Fashion & Everyday Essentials",
+    template: "%s | Ragno",
   },
-  description: "Discover premium apparel, trendy outfits, and lifestyle accessories at Ruchi Rong.",
+  description: "Discover premium apparel, trendy outfits, and luxury essentials at Ragno.",
 };
 
 export default function RootLayout({
