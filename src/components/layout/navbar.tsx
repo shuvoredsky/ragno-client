@@ -21,7 +21,7 @@ interface NavbarProps {
 
 const defaultLinks: NavLink[] = [
   { label: "SHOP", href: "/products" },
-  { label: "NEW ARRIVALS", href: "/products?isNewArrival=true" },
+  { label: "COLLECTIONS", href: "/products" },
   { label: "OUR STORY", href: "/about-us" },
   { label: "CONTACT", href: "/contact" },
 ];
