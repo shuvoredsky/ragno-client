@@ -57,23 +57,6 @@ export function getGuestCorrelationId(): string {
 }
 
 /**
- * Client cookie helpers
- */
-export function getAccessToken(): string | undefined {
-  if (typeof window === "undefined") return undefined;
-  return Cookies.get("accessToken");
-}
-
-export function setAccessToken(token: string): void {
-  Cookies.set("accessToken", token, { expires: 30, sameSite: "lax" });
-}
-
-export function removeAccessToken(): void {
-  Cookies.remove("accessToken");
-  Cookies.remove("user_session");
-}
-
-/**
  * Validates Bangladeshi mobile phone number format (013-019, 11 digits)
  */
 export function isValidBDPhone(phone: string): boolean {

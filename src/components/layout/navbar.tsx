@@ -8,6 +8,7 @@ import { useCartStore } from "@/store/cart-store";
 import { useUiStore } from "@/store/ui-store";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
+import { logoutAction } from "@/lib/actions/auth-actions";
 
 interface NavLink {
   label: string;
@@ -38,11 +39,13 @@ export function Navbar({
 
   const { openCart, getTotalItems } = useCartStore();
   const { openSearch } = useUiStore();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, hydrateSession } = useAuthStore();
   const totalCartItems = getTotalItems();
 
-  // Close account dropdown when clicking outside
+  // Hydrate user session and close dropdown on outside click
   useEffect(() => {
+    hydrateSession();
+
     function handleClickOutside(event: MouseEvent) {
       if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
         setAccountDropdownOpen(false);
@@ -50,13 +53,15 @@ export function Navbar({
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [hydrateSession]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutAction();
     logout();
     setAccountDropdownOpen(false);
     toast.success("Successfully logged out");
     router.push("/");
+    router.refresh();
   };
 
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";

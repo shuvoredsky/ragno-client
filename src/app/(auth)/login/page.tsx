@@ -11,8 +11,7 @@ import { toast } from "sonner";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth-store";
-import { apiClient } from "@/lib/api-client";
-import { AuthResponse } from "@/types";
+import { loginAction } from "@/lib/actions/auth-actions";
 
 // Validation schema matching server authentication requirements
 const loginSchema = z.object({
@@ -62,22 +61,22 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Determine if identifier is email or phone for server payload
+      // Determine if identifier is email or phone
       const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.emailOrPhone);
-      const payload = isEmail
+      const credentials = isEmail
         ? { email: data.emailOrPhone.trim().toLowerCase(), password: data.password }
         : { phone: data.emailOrPhone.trim().replace(/[\s\-\+]/g, ""), password: data.password };
 
-      // Call Express server auth endpoint: POST /api/v1/auth/signin
-      const response = await apiClient.post<AuthResponse>("/auth/signin", payload);
+      // Call secure Next.js Server Action (stores JWT in HttpOnly cookie server-side)
+      const result = await loginAction(credentials);
 
-      if (response.success && response.data) {
-        const { user, accessToken } = response.data;
-        login(user, accessToken);
+      if (result.success && result.user) {
+        login(result.user);
         toast.success("Welcome back! Login successful.");
         router.push(callbackUrl);
+        router.refresh();
       } else {
-        toast.error(response.message || "Invalid credentials. Please try again.");
+        toast.error(result.message || "Invalid credentials. Please try again.");
       }
     } catch (error: any) {
       console.error("Login error:", error);

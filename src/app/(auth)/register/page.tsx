@@ -6,11 +6,11 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Eye, EyeOff, Lock, Mail, User, Phone, Loader2, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User, Phone, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { Input } from "@/components/ui/input";
-import { apiClient } from "@/lib/api-client";
+import { registerAction } from "@/lib/actions/auth-actions";
 
 // Zod validation schema strictly aligned with server authUserSignUp constraints
 const registerSchema = z
@@ -97,14 +97,14 @@ export default function RegisterPage() {
         password: data.password,
       };
 
-      // Call Express server endpoint: POST /api/v1/auth/signup
-      const response = await apiClient.post("/auth/signup", payload);
+      // Call secure Next.js Server Action
+      const result = await registerAction(payload);
 
-      if (response.success) {
+      if (result.success) {
         toast.success("Account created successfully! Please sign in with your credentials.");
         router.push("/login");
       } else {
-        toast.error(response.message || "Registration failed. Please check your details.");
+        toast.error(result.message || "Registration failed. Please check your details.");
       }
     } catch (error: any) {
       console.error("Registration error:", error);

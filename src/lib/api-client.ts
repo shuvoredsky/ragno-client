@@ -1,5 +1,7 @@
 import { ApiResponse } from "@/types";
-import { getAccessToken } from "./utils";
+import { toast } from "sonner";
+import { logoutAction } from "./actions/auth-actions";
+import { useAuthStore } from "@/store/auth-store";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8002/api/v1";
 
@@ -8,6 +10,7 @@ interface FetchOptions extends RequestInit {
   retryDelay?: number;
   timeout?: number;
   token?: string;
+  skipAuthRedirect?: boolean;
 }
 
 // In-flight deduplication cache
@@ -30,7 +33,7 @@ function resolveUrl(url: string): string {
 }
 
 /**
- * Core resilient fetch function with retry, 429 backoff & timeout
+ * Core resilient fetch function with retry, 429 backoff, 401 interceptor & timeout
  */
 export async function fetchWithRetry<T = any>(
   endpoint: string,
@@ -41,6 +44,7 @@ export async function fetchWithRetry<T = any>(
     retryDelay = 800,
     timeout = 10000,
     token,
+    skipAuthRedirect = false,
     ...customConfig
   } = options;
 
@@ -52,12 +56,10 @@ export async function fetchWithRetry<T = any>(
     ...(customConfig.headers as Record<string, string>),
   };
 
-  // Attach token if provided or stored
-  const authToken = token || getAccessToken();
-  if (authToken && !headers["Authorization"]) {
-    headers["Authorization"] = authToken.startsWith("Bearer ")
-      ? authToken
-      : `Bearer ${authToken}`;
+  if (token && !headers["Authorization"]) {
+    headers["Authorization"] = token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token}`;
   }
 
   let lastError: any = null;
@@ -74,6 +76,28 @@ export async function fetchWithRetry<T = any>(
       });
 
       clearTimeout(timeoutId);
+
+      // Fix 3: Global 401 Unauthorized / Token Expiry Interception
+      if (response.status === 401) {
+        if (typeof window !== "undefined" && !skipAuthRedirect) {
+          console.warn("[Auth 401] Unauthorized access detected. Clearing session...");
+          useAuthStore.getState().logout();
+          logoutAction().catch(() => {});
+
+          toast.error("Session expired, please login again");
+          const currentPath = window.location.pathname;
+          if (currentPath !== "/login" && currentPath !== "/register") {
+            window.location.href = `/login?callbackUrl=${encodeURIComponent(currentPath)}`;
+          }
+        }
+
+        const authErr = await response.json().catch(() => ({}));
+        throw {
+          success: false,
+          statusCode: 401,
+          message: authErr.message || "Unauthorized access. Please login again.",
+        };
+      }
 
       // Handle Rate Limiting (429)
       if (response.status === 429 && attempt < maxRetries) {
@@ -122,6 +146,11 @@ export async function fetchWithRetry<T = any>(
           statusCode: 408,
           message: "Request timeout. Server took too long to respond.",
         };
+      }
+
+      // If 401, do not retry
+      if (error?.statusCode === 401) {
+        throw error;
       }
 
       // If connection refused, try IPv4 fallback once
