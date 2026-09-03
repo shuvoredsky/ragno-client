@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Search, ShoppingBag, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, ShoppingBag, Menu, X, User as UserIcon, LogOut, Package, UserCircle, Settings } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
 import { useUiStore } from "@/store/ui-store";
+import { useAuthStore } from "@/store/auth-store";
+import { toast } from "sonner";
 
 interface NavLink {
   label: string;
@@ -29,10 +31,35 @@ export function Navbar({
   links = defaultLinks,
 }: NavbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
+
   const { openCart, getTotalItems } = useCartStore();
   const { openSearch } = useUiStore();
+  const { user, isAuthenticated, logout } = useAuthStore();
   const totalCartItems = getTotalItems();
+
+  // Close account dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+        setAccountDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setAccountDropdownOpen(false);
+    toast.success("Successfully logged out");
+    router.push("/");
+  };
+
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#090407]/90 backdrop-blur-md border-b border-white/5 transition-all">
@@ -72,7 +99,7 @@ export function Navbar({
           })}
         </nav>
 
-        {/* Right: Actions & Cart & CTA */}
+        {/* Right: Actions & User & Cart */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Search Trigger */}
           <button
@@ -83,6 +110,103 @@ export function Navbar({
           >
             <Search className="w-4 h-4" />
           </button>
+
+          {/* User / Account Icon & Dropdown Menu */}
+          <div className="relative" ref={accountRef}>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
+                aria-label="User account menu"
+                className="w-9 h-9 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-white/20 text-white font-bold text-xs flex items-center justify-center transition-all shadow-sm focus:outline-none"
+              >
+                <span>{userInitial}</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
+                aria-label="Account options"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+              >
+                <UserIcon className="w-4 h-4" />
+              </button>
+            )}
+
+            {/* Account Dropdown */}
+            {accountDropdownOpen && (
+              <div className="absolute right-0 mt-3 w-56 bg-[#11080e] border border-white/10 rounded-2xl p-2 shadow-2xl backdrop-blur-xl z-50 animate-in fade-in zoom-in-95 duration-150">
+                {isAuthenticated ? (
+                  <>
+                    {/* User info banner */}
+                    <div className="px-3 py-2.5 border-b border-white/10">
+                      <p className="text-xs font-bold text-white truncate">{user?.name || "Customer"}</p>
+                      <p className="text-[11px] text-zinc-400 truncate">{user?.email || user?.phone || ""}</p>
+                    </div>
+
+                    <div className="py-1 space-y-0.5">
+                      <Link
+                        href="/profile"
+                        onClick={() => setAccountDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
+                      >
+                        <UserCircle className="w-4 h-4 text-zinc-400" />
+                        My Profile
+                      </Link>
+                      <Link
+                        href="/profile/orders"
+                        onClick={() => setAccountDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
+                      >
+                        <Package className="w-4 h-4 text-zinc-400" />
+                        My Orders
+                      </Link>
+                      <Link
+                        href="/profile/settings"
+                        onClick={() => setAccountDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
+                      >
+                        <Settings className="w-4 h-4 text-zinc-400" />
+                        Settings
+                      </Link>
+                    </div>
+
+                    <div className="pt-1 border-t border-white/10">
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-950/40 transition-colors text-left"
+                      >
+                        <LogOut className="w-4 h-4 text-rose-400" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="py-1 space-y-1">
+                    <div className="px-3 py-2 text-left">
+                      <p className="text-xs font-bold text-white">Welcome</p>
+                      <p className="text-[11px] text-zinc-400">Access your account & orders</p>
+                    </div>
+                    <Link
+                      href="/login"
+                      onClick={() => setAccountDropdownOpen(false)}
+                      className="block w-full text-center py-2 px-3 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-colors shadow-sm"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setAccountDropdownOpen(false)}
+                      className="block w-full text-center py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider transition-colors border border-white/5"
+                    >
+                      Create Account
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Cart Trigger with Count Badge */}
           <button
@@ -144,7 +268,60 @@ export function Navbar({
                 </Link>
               );
             })}
-            <div className="pt-4 border-t border-white/10">
+
+            {/* Mobile Account Links */}
+            <div className="pt-3 border-t border-white/10 space-y-2">
+              {isAuthenticated ? (
+                <>
+                  <div className="px-4 py-1 text-xs text-zinc-400">
+                    Signed in as <span className="text-white font-bold">{user?.name}</span>
+                  </div>
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-zinc-300 hover:bg-white/5"
+                  >
+                    My Profile
+                  </Link>
+                  <Link
+                    href="/profile/orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-zinc-300 hover:bg-white/5"
+                  >
+                    My Orders
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-rose-400 hover:bg-rose-950/30"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-center rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider py-2.5 shadow-md"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-center rounded-xl bg-white/10 text-white font-bold text-xs uppercase tracking-wider py-2.5 border border-white/10"
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-2">
               <Link
                 href="/products"
                 onClick={() => setMobileMenuOpen(false)}
