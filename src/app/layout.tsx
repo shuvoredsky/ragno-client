@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { AmbientBackground } from "@/components/layout/ambient-background";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +24,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-[#fafafa] text-[#1a1a1a] font-sans antialiased selection:bg-black selection:text-white">
+      <body className="min-h-screen bg-[#080306] text-zinc-100 font-sans antialiased selection:bg-rose-600 selection:text-white relative">
+        <AmbientBackground />
         <Providers>{children}</Providers>
       </body>
     </html>

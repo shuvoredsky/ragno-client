@@ -10,7 +10,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen bg-[#090407] text-white flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden selection:bg-rose-600 selection:text-white">
+    <div className="min-h-screen bg-transparent text-white flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden selection:bg-rose-600 selection:text-white">
       {/* Background ambient wine glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[600px] h-[350px] bg-rose-950/30 blur-[130px] rounded-full pointer-events-none -z-10"

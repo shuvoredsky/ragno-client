@@ -156,7 +156,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090407] text-white selection:bg-rose-600 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-transparent text-white selection:bg-rose-600 selection:text-white">
       {/* 1. Announcement Bar */}
       <AnnouncementBar text="FREE SHIPPING ON ORDERS OVER ৳5000" />
 
