@@ -22,8 +22,9 @@ import {
   detailedProducts,
   youMayAlsoLikeProducts,
   DetailedProduct,
-} from "@/components/products";
 import { useCartStore } from "@/store/cart-store";
+import { useWishlistStore } from "@/store/wishlist-store";
+import { useAuthStore } from "@/store/auth-store";
 
 export default function ProductDetailPage({
   params,
@@ -33,6 +34,8 @@ export default function ProductDetailPage({
   const { slug } = use(params);
   const router = useRouter();
   const { addItem, openCart } = useCartStore();
+  const { isInWishlist, toggleItem } = useWishlistStore();
+  const { user } = useAuthStore();
 
   // Find product from mock dataset (fallback to default detail product if custom slug)
   const product: DetailedProduct = useMemo(() => {
@@ -115,6 +118,17 @@ export default function ProductDetailPage({
     router.push("/checkout");
   };
 
+  // Handler: Toggle Wishlist
+  const isWishlisted = isInWishlist(product._id);
+  const handleToggleWishlist = async () => {
+    const newState = await toggleItem(product as any, user?.id || user?._id);
+    if (newState) {
+      toast.success(`Added ${product.name} to wishlist`);
+    } else {
+      toast.info(`Removed ${product.name} from wishlist`);
+    }
+  };
+
   if (!product) {
     return <ProductDetailSkeleton />;
   }
@@ -137,36 +151,36 @@ export default function ProductDetailPage({
           <Link href="/" className="hover:text-white transition-colors">
             Home
           </Link>
-          <span className="text-zinc-600">/</span>
+          <span>/</span>
           <Link href="/products" className="hover:text-white transition-colors">
             Shop
           </Link>
-          <span className="text-zinc-600">/</span>
+          <span>/</span>
           <Link
             href={`/products?category=${product.categorySlug}`}
             className="hover:text-white transition-colors"
           >
             {product.categoryName}
           </Link>
-          <span className="text-zinc-600">/</span>
-          <span className="text-white font-semibold truncate max-w-[200px] sm:max-w-md">
+          <span>/</span>
+          <span className="text-white truncate max-w-[200px] sm:max-w-none">
             {product.name}
           </span>
         </nav>
 
         {/* 4. Two-Column Showcase Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-          {/* Left Column: Image Gallery (6 cols) */}
-          <div className="lg:col-span-6 lg:sticky lg:top-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-start">
+          {/* Left Column: Image Gallery (7 cols) */}
+          <div className="lg:col-span-7">
             <ProductGallery
               images={product.images}
               productName={product.name}
-              isSale={product.isSale}
+              isSale={Boolean(product.mrpPrice && product.mrpPrice > product.price)}
             />
           </div>
 
-          {/* Right Column: Product Info & Actions (6 cols) */}
-          <div className="lg:col-span-6 space-y-6 sm:space-y-8">
+          {/* Right Column: Product Information & Purchase Controls (5 cols) */}
+          <div className="lg:col-span-5 space-y-6 sm:space-y-8">
             {/* Header, Price & Stock Info */}
             <ProductInfo
               categoryName={product.categoryName}
@@ -201,6 +215,8 @@ export default function ProductDetailPage({
               onBuyNow={handleBuyNow}
               isOutOfStock={isOutOfStock}
               isLoading={isAdding}
+              isWishlisted={isWishlisted}
+              onToggleWishlist={handleToggleWishlist}
             />
 
             {/* Product Accordion (Description, Care, Shipping) */}

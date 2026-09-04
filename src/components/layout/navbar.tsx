@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, ShoppingBag, Menu, X, User as UserIcon, LogOut, Package, UserCircle, Settings } from "lucide-react";
+import { Search, ShoppingBag, Heart, Menu, X, User as UserIcon, LogOut, Package, UserCircle, Settings } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
+import { useWishlistStore } from "@/store/wishlist-store";
 import { useUiStore } from "@/store/ui-store";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
@@ -38,9 +39,11 @@ export function Navbar({
   const accountRef = useRef<HTMLDivElement>(null);
 
   const { openCart, getTotalItems } = useCartStore();
+  const { items: wishlistItems } = useWishlistStore();
   const { openSearch } = useUiStore();
   const { user, isAuthenticated, logout, hydrateSession } = useAuthStore();
   const totalCartItems = getTotalItems();
+  const totalWishlistItems = wishlistItems.length;
 
   // Hydrate user session and close dropdown on outside click
   useEffect(() => {
@@ -213,6 +216,24 @@ export function Navbar({
             )}
           </div>
 
+          {/* Wishlist Trigger with Red Stroke & Fill Badge */}
+          <Link
+            href="/wishlist"
+            aria-label="View wishlist"
+            className="relative w-9 h-9 rounded-full flex items-center justify-center text-rose-500 hover:text-rose-400 hover:bg-white/10 transition-colors"
+          >
+            <Heart
+              className={`w-4 h-4 text-rose-500 transition-all ${
+                totalWishlistItems > 0 ? "fill-rose-500 text-rose-500" : "stroke-rose-500"
+              }`}
+            />
+            {totalWishlistItems > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center animate-scale-in shadow-sm">
+                {totalWishlistItems}
+              </span>
+            )}
+          </Link>
+
           {/* Cart Trigger with Count Badge */}
           <button
             type="button"
@@ -273,6 +294,23 @@ export function Navbar({
                 </Link>
               );
             })}
+
+            {/* Mobile Wishlist Link */}
+            <Link
+              href="/wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-4 py-2.5 rounded-xl text-sm font-bold tracking-wider uppercase transition-colors flex items-center justify-between text-rose-400 hover:text-rose-300 hover:bg-white/5"
+            >
+              <div className="flex items-center gap-2">
+                <Heart className={`w-4 h-4 ${totalWishlistItems > 0 ? "fill-rose-500" : ""}`} />
+                <span>Wishlist</span>
+              </div>
+              {totalWishlistItems > 0 && (
+                <span className="px-2 py-0.5 rounded-full bg-rose-600 text-white text-xs font-bold">
+                  {totalWishlistItems}
+                </span>
+              )}
+            </Link>
 
             {/* Mobile Account Links */}
             <div className="pt-3 border-t border-white/10 space-y-2">
